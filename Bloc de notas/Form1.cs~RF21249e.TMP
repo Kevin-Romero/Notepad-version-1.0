@@ -1,0 +1,207 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+//CREADO POR KEVIN ROMERO GRACIAS AL TUTORIAL DE PABLO LOPEZ
+//LINK DEL VIDEO https://www.youtube.com/watch?v=BU-uFypvOog
+
+namespace Bloc_de_notas
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        private void notepadTextChanged(object sender, EventArgs e)
+        {
+            string nameFile = "Sin titulo";
+
+            this.Text = nameFile + " : Bloc de Notas";
+        }
+
+        private void nuevoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            if (richTextBox1.Text == null || richTextBox1.Text == ""){
+                 
+            }
+            else
+            {
+                string message = "Desea guardar el archivo?";    
+                string title = "Bloc de notas";
+
+                MessageBoxButtons buttons = MessageBoxButtons.YesNoCancel;
+                DialogResult result;
+
+                result = MessageBox.Show(this, message, title, buttons);
+
+                if (result == DialogResult.No)
+                {
+                    richTextBox1.Clear();
+                }
+                else
+                {
+                    if(result == DialogResult.Yes)
+                    {
+                        guardarComoToolStripMenuItem_Click( sender, e);
+                    }
+                }
+                
+            }
+
+        }
+
+        private void abrirToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string rutaArchivo, nameFile;
+
+            OpenFileDialog fileOpen = new OpenFileDialog();
+
+
+            StreamReader fileRead = null;
+
+            fileOpen.Filter = "Archivos de texto (.txt)|*.txt|*Todos los archivos (*.*)|*.*";
+            fileOpen.Title = "Abrir archivo";
+            fileOpen.ShowDialog();
+            fileOpen.OpenFile();
+            rutaArchivo = fileOpen.FileName;
+
+
+            fileRead = File.OpenText(rutaArchivo);
+            richTextBox1.Text = fileRead.ReadToEnd();
+
+
+            nameFile = fileOpen.SafeFileName;
+
+            this.Text = nameFile + " : Bloc de Notas";
+        }
+
+        private void guardarComoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string nameFile;
+
+            SaveFileDialog fileSave = new SaveFileDialog();
+
+            StreamWriter fileWrite = null;
+
+            fileSave.Filter = "Archivos de texto(.txt) | *.txt";
+            fileSave.Title = "Guardar como...";
+            fileSave.ShowDialog();
+
+            string ruta = fileSave.FileName;
+
+            fileWrite = File.AppendText(ruta);
+            fileWrite.Write(richTextBox1.Text);
+            fileWrite.Flush();
+
+            nameFile = fileSave.FileName;
+
+            this.Text = nameFile;
+        }
+
+        private void guardarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+            if (this.Text != "Sin titulo : Bloc de Notas" || this.Text == "Bloc de Notas")
+            {
+               
+            }
+            else
+            {
+                guardarComoToolStripMenuItem_Click(sender, e);
+            }
+        }
+
+        private void salirToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void adelanteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Redo();
+        }
+
+        private void atrasToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Undo();
+        }
+
+        private void copiarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Copy();
+        }
+
+        private void pegarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Paste();
+        }
+
+        private void cortarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Cut();
+        }
+
+        private void seleccionarTodoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            richTextBox1.SelectAll();
+        }
+
+        private void borrarTodoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Clear();
+        }
+
+        private void horaYFechaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DateTime fecha = DateTime.Now;
+            richTextBox1.Text = fecha.ToString();
+        }
+
+        private void estiloDeFuenteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FontDialog fileFont = new FontDialog();
+            fileFont.Font = richTextBox1.Font;
+
+            if(fileFont.ShowDialog() == DialogResult.OK){
+                richTextBox1.Font = fileFont.Font;
+            }
+        }
+
+        private void colorDeFuenteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog fileColor = new ColorDialog();
+            
+            if(fileColor.ShowDialog() == DialogResult.OK)
+            {
+                richTextBox1.ForeColor = fileColor.Color;
+            }
+        }
+
+        private void colorDeFondoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ColorDialog fileFondo = new ColorDialog();
+
+            if(fileFondo.ShowDialog() == DialogResult.OK)
+            {
+                richTextBox1.BackColor = fileFondo.Color;
+            }
+        }
+
+        private void acercaDeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Creado por Kevin Romero");
+        }
+
+        
+    }
+}
